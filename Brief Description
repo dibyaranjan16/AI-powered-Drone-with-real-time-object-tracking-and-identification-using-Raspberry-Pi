@@ -1,0 +1,23 @@
+>>> The AI-powered drone system is designed as a fully embedded, closed-loop architecture. It integrates vision, inference, and control subsystems to track and follow objects in real time, 
+    without relying on external computation. The description below explains the system layout in sequential stages:
+
+1. Image Capture (Input Layer) 
+   A 5MP Pi Camera Module mounted on the drone captures continuous video frames. These frames are directly fed into the Raspberry Pi 4 Model B for real-time processing.
+2. Edge Processing on Raspberry Pi 
+   The Raspberry Pi acts as the primary compute unit. It executes a vision pipeline using OpenCV to perform frame preprocessing such as resizing, blurring, and color filtering. 
+   The processed frames are then passed into a deep learning model such as YOLO or TensorFlow Lite for object detection and classification.
+3. Object Localization & Tracking 
+   The AI model generates bounding boxes and object coordinates within the video frame. A Python-based control script maps the object's position relative to the frame center and 
+   classifies its movement requirement (e.g., follow, rotate, ascend).
+4. Command Generation & Control Logic 
+   The positional data is converted into actionable commands (pitch, yaw, roll, throttle), which are transmitted to the SpeedyBee F405 V3 Flight Controller using UART or PWM signaling.
+5. Flight Dynamics & Actuation 
+   The flight controller interprets incoming commands and adjusts motor speeds via ESCs connected to four A2212 1000KV BLDC motors. This enables real-time flight correction and object tracking.
+6. Power Distribution 
+   All electronic components, including the Raspberry Pi, camera, ESCs, and flight controller, are powered by a 3S 11.1V LiPo Battery via a Matek PDB-XT60 module that ensures stable voltage and regulated power delivery.
+7. Closed-Loop Feedback 
+   The new drone position alters the camera's view. This updated visual input is looped back into the Raspberry Pi for the next detection cycle, completing the closed-loop control system.
+8. Expansion Capability 
+   Optional modules such as GPS, Wi-Fi telemetry, or ultrasonic sensors can be integrated without major changes, making the system scalable and modular.
+
+>>> This project layout ensures complete onboard autonomy, minimal latency, and robust real-time performance, aligning perfectly with modern edge AI and IoTdriven robotic systems.
