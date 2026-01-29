@@ -1,0 +1,48 @@
+>>> Libraries Used  
+The AI-powered drone project relies on several open-source libraries across computer vision, machine learning, hardware interfacing, and system control. These libraries ensure smooth communication between 
+components and efficient real-time processing.
+
+1. Python 3.x (Core Language) 
+• Python was chosen due to its ease of development, wide community support, and compatibility with both AI and embedded hardware. 
+• Version 3.9 or later is preferred for compatibility with modern libraries like TensorFlow Lite and OpenCV. 
+
+2. OpenCV (cv2) 
+• Module: cv2 
+• Use: Image capture, frame resizing, color conversion, drawing bounding boxes, and camera exposure control. 
+• Sample functions: 
+o cv2.VideoCapture(), cv2.resize(), cv2.cvtColor(), 
+cv2.rectangle(), cv2.imshow() 
+
+3. TensorFlow Lite Runtime 
+• Module: tflite_runtime.interpreter 
+• Use: Executes lightweight AI models on the Raspberry Pi without needing full TensorFlow installation. 
+• Enables real-time inference from .tflite models using edge-optimized 
+APIs. 
+• Functions used: 
+o Interpreter(), allocate_tensors(), set_tensor(), invoke(), get_tensor() 
+
+4. PySerial 
+• Module: serial 
+• Use: Establishes UART communication between Raspberry Pi and Flight Controller. 
+• Handles command transmission like “YAW_LEFT”, “HOLD”, etc. 
+• Key methods: 
+o serial.Serial(), write(), read(), flush() 
+
+5. NumPy 
+• Module: numpy 
+• Use: Numerical operations, tensor shaping, input normalization for AI model inference. 
+• Sample usage: 
+o np.expand_dims(), np.float32(), array slicing 
+
+6. RPi.GPIO (Optional) 
+• Module: RPi.GPIO 
+• Use: If GPIO pins are used for PWM control, status LEDs, or hardware triggers. 
+• In current setup, it may be used for simple status indication or onboard sensors. 
+  
+7. Time & OS (Built-in Python) 
+• Modules: time, os 
+• Use: Time delays (e.g., between UART transmissions), loop control, file system access for logging or debugging. 
+
+8. Optional: imutils, picamera 
+• imutils: For frame manipulation and contour detection (if needed for advanced processing). 
+• picamera: Raspberry Pi camera interface if OpenCV's VideoCapture is insufficient or lacks exposure control options.
