@@ -1,0 +1,60 @@
+>>> Main Code Structure  
+This section provides a detailed functional breakdown of the main Python script used on the Raspberry Pi. It shows how different components—AI 
+logic, communication, and camera input—are orchestrated together for real-time tracking and drone control.
+
+1. Global Variables and Constants : Defined constants for camera configuration, object thresholds, and UART setup: 
+FRAME_WIDTH = 320 
+FRAME_HEIGHT = 240 
+CENTER_THRESHOLD = 50 
+SERIAL_PORT = "/dev/ttyS0" 
+BAUD_RATE = 115200 
+• These values define the resolution for inference, object offset range, and communication settings.
+
+2. Initialization (setup() equivalent) : All key modules are initialized at the beginning of the script: 
+• Camera Stream Setup: 
+cap = cv2.VideoCapture(0) 
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH) 
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT) 
+• Serial Connection to Flight Controller: 
+ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1) 
+• Load TensorFlow Lite Interpreter: 
+interpreter = tflite.Interpreter(model_path="model.tflite") 
+interpreter.allocate_tensors() 
+input_details = interpreter.get_input_details() 
+output_details = interpreter.get_output_details()
+
+3. Main Loop (loop() equivalent) : This is the core real-time execution loop: 
+• Frame Capture & Preprocessing: 
+ret, frame = cap.read() 
+frame_resized = cv2.resize(frame, (input_width, input_height)) 
+input_data = np.expand_dims(frame_resized / 255.0, 
+axis=0).astype(np.float32) 
+• AI Model Inference: 
+interpreter.set_tensor(input_details[0]['index'], input_data) 
+interpreter.invoke() 
+output_data = interpreter.get_tensor(output_details[0]['index']) 
+• Bounding Box Analysis: 
+# Assume a single box for simplification 
+x1, y1, x2, y2 = output_data[0][:4] 
+cx = (x1 + x2) // 2 
+offset = cx - FRAME_WIDTH // 2 
+• Movement Command Decision: 
+if offset > CENTER_THRESHOLD: 
+command = "YAW_RIGHT" 
+elif offset < -CENTER_THRESHOLD: 
+command = "YAW_LEFT" 
+else: 
+command = "HOLD" 
+• Serial Communication: 
+ser.write((command + "\n").encode()) 
+• Optional Visual Debug: 
+cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2) 
+cv2.imshow("Tracking", frame)
+
+4. Cleanup on Exit :  Releases all resources when script exits: 
+cap.release() 
+cv2.destroyAllWindows() 
+ser.close() 
+
+
+>>>  This structure ensures the system can loop endlessly, capturing, processing, deciding, and commanding in real time with minimal latency.
